@@ -190,12 +190,16 @@ var disease = [{
 }];
 
 var i18n = {
+    title: { en:'Rhone Ma Dosage Calculator', zh: 'Rhone Ma 药物剂量计算机' },
     animal: { en:'Animal', zh: '动物' },
+    poultry: { en: 'Poultry', zh: '家畜' },
+    swine: { en: 'Swine', zh: '猪' },
     disease: { en: 'Disease', zh: '疾病' },
     product_name: { en: 'Product Name', zh: '产品名称' },
     concentration: { en: 'Product Concentration', zh: '集中产品' },
     dosage: { en: 'Dosage', zh: '剂量' },
     no_animal: { en: 'No. of Animal', zh: '动物数量' },
+    feed_intake: { en: 'Feed intake(kg/day)', zh: 'Feed intake(kg/day)' },
     average_weight: { en: 'Average Body Weight (kg)', zh: '动物平均体量(kg)' },
     calculate: { en: 'Calculate', zh: '计算' },
     msg1: { en: 'Please enter Product Active Ingredients Concentration (%)', zh: 'Please enter Product Active Ingredients Concentration (%)' },
@@ -203,8 +207,16 @@ var i18n = {
     msg3: { en: 'Please enter quantity of animal', zh: 'Please enter quantity of animal' },
     msg4: { en: 'Please enter animal\'s body weight', zh: 'Please enter animal\'s body weight' },
     msg5: { en: 'reserve', zh: 'reserve' },
-    back: { en: 'Back', zh: '返回' },
-    exit: { en: 'Exit', zh: '离开' }
+    rs1: { en: 'Animal quantity', zh: '动物数量' },
+    rs2: { en: 'Average Body Weight', zh: '动物平均体重' },
+    rs3: { en: 'Amount of active ingredient required', zh: '所需活性成分' },
+    rs4: { en: 'Amount of product required', zh: '所需产品使用量' },
+    back: { en: 'Back', zh: '回到前一页' },
+    exit: { en: 'Exit', zh: '离开' },
+    contact: {
+        en: 'Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call<br />+60378737355 for more information',
+        zh: '请游览 <a href="htpp://www.rhonema.com">www.rhonema.com</a> 或联络<br />+60378737355 以获得更多资讯'
+    }
 };
 
 
@@ -215,6 +227,7 @@ $(function() {
 
     function switchLang () {
         var l = language;
+        $('title, div.titlebar').html(i18n.title[l]);
         $.each($('.lang'), function(){
             var k = $(this).attr('data-lang');
 
@@ -321,7 +334,8 @@ $(function() {
         var dosage = $('#dosage').val();
         var animal = $('#no_animal').val();
         var weight = $('#average_weight').val();
-        var devide = ($('#measure').val() == 'mgkg') ? 1000 : 1000000;
+        var unit   = ($('#measure').val() == 'mgkg') ? 'gm' : 'MIU';
+        var devide = (unit == 'gm') ? 1000 : 1000000;
 
         if ($('div.others:hidden').length) {
             active = $('#product option:selected').attr('data-ingredient');
@@ -349,8 +363,8 @@ $(function() {
         var t2 = (dosage * animal * weight) / active;
         $('span.animal_qty').html(animal);
         $('span.weight').html(weight);
-        $('span.amt_ingredient').html(t1);
-        $('span.amt_product').html(t2);
+        $('span.amt_ingredient').html(t1+' '+unit);
+        $('span.amt_product').html(t2+' '+unit);
 
         var w = $('#form').outerWidth();
         var h = $('#form').outerHeight();
