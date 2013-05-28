@@ -196,31 +196,59 @@ var i18n = {
     swine: { en: 'Swine', zh: '猪' },
     disease: { en: 'Disease', zh: '疾病' },
     product_name: { en: 'Product Name', zh: '产品名称' },
-    concentration: { en: 'Product Concentration', zh: '集中产品' },
+    concentration: { en: 'Product Concentration (%)', zh: '产品浓度（%）' },
     dosage: { en: 'Dosage', zh: '剂量' },
     no_animal: { en: 'No. of Animal', zh: '动物数量' },
-    feed_intake: { en: 'Feed intake(kg/day)', zh: 'Feed intake(kg/day)' },
+    feed_intake: { en: 'Feed intake(kg/day)', zh: '每日采食量(kg/天)' },
+    kgday: { en: 'kg/day', zh: 'kg/天' },
     average_weight: { en: 'Average Body Weight (kg)', zh: '动物平均体量(kg)' },
     calculate: { en: 'Calculate', zh: '计算' },
     msg1: { en: 'Please enter Product Active Ingredients Concentration (%)', zh: 'Please enter Product Active Ingredients Concentration (%)' },
     msg2: { en: 'Please enter Dosage (mg/kg)', zh: 'Please enter Dosage (mg/kg)' },
     msg3: { en: 'Please enter quantity of animal', zh: 'Please enter quantity of animal' },
     msg4: { en: 'Please enter animal\'s body weight', zh: 'Please enter animal\'s body weight' },
-    msg5: { en: 'reserve', zh: 'reserve' },
+    msg5: { en: 'Please enter Feed intake (kg/day)', zh: 'Please enter Feed intake (kg/day)' },
     rs1: { en: 'Animal quantity', zh: '动物数量' },
     rs2: { en: 'Average Body Weight', zh: '动物平均体重' },
     rs3: { en: 'Amount of active ingredient required', zh: '所需活性成分' },
     rs4: { en: 'Amount of product required', zh: '所需产品使用量' },
+    rss1: { en: 'Average Body weight of animal', zh: '动物平均体重' },
+    rss2: { en: 'Daily Feed Consumption', zh: '每日采食量' },
+    rss3: { en: 'Amount of product required per animal', zh: '每只动物需要的产品分量' },
+    rss4: { en: 'Amount of product need to add into 1 MT of feed', zh: '每公屯饲料需要添加产品剂量' },
     back: { en: 'Back', zh: '回到前一页' },
     exit: { en: 'Exit', zh: '离开' },
     contact: {
-        en: 'Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call<br />+60378737355 for more information',
-        zh: '请游览 <a href="htpp://www.rhonema.com">www.rhonema.com</a> 或联络<br />+60378737355 以获得更多资讯'
+        en: 'Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call <a href="tel:+60378737355">+60378737355</a> for more information',
+        zh: '请游览 <a href="htpp://www.rhonema.com">www.rhonema.com</a> 或联络 <a href="tel:+60378737355">+60378737355</a> 以获得更多资讯'
     }
 };
 
 
 $(function() {
+    function number_format (number, decimals, dec_point, thousands_sep) {
+        number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+            s = '',
+            toFixedFix = function (n, prec) {
+                var k = Math.pow(10, prec);
+                return '' + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+        if (s[0].length > 3) {
+            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+            s[1] = s[1] || '';
+            s[1] += new Array(prec - s[1].length + 1).join('0');
+        }
+        return s.join(dec);
+    } // number_format
+
     function message (no) {
         alert(i18n[no][language]);
     } // message
@@ -268,6 +296,7 @@ $(function() {
             $('#form').removeAttr('style');
         });
         switchLang();
+        $('#no_animal').focus();
     });
 
 
@@ -280,12 +309,23 @@ $(function() {
     $('#animal').on('change', function(){
         var animal = $(this).val();
         if (animal == 'poultry') {
+            $('#rs-poultry').show();
+            $('#rs-swine').hide();
             $('div.swine').slideUp('normal', function(){
-                $('div.poultry').slideDown();
+                $('#dosage').attr('disabled', 'disabled').val('20');
+                $('div.poultry').slideDown('normal', function(){
+                    $('#no_animal').focus();
+                });
             });
         } else {
+            $('#rs-poultry').hide();
+            $('#rs-swine').show();
             $('div.poultry').slideUp('normal', function(){
-                $('div.swine').slideDown();
+                $('#concentration').val('50');
+                $('#dosage').removeAttr('disabled');
+                $('div.swine').slideDown('normal', function(){
+                    $('#concentration').focus();
+                });
             });
         }
     });
@@ -330,6 +370,66 @@ $(function() {
     });
 
     $('#calculate').click(function(){
+        var showResultFn = function () {
+            var w = $('#form').outerWidth();
+            var h = $('#form').outerHeight();
+            $('#form').css('position', 'relative').animate({
+                left: -w+'px'
+            }, 500, function(){
+                $('#form').hide();
+            });
+
+            $('#result').css({
+                position: 'absolute',
+                top: 0,
+                width: w+'px',
+                height: h+'px',
+                left: w+'px'
+            }).show().animate({
+                left: 0
+            }, 500, function(){
+                $('#result').attr('style', 'height:'+h+'px');
+            });
+        };
+
+        if ($('#animal').val() == 'swine') {
+            console.log(1);
+            var active = $('#concentration').val();
+            var dosage = $('#dosage').val();
+            var intake = $('#feed_intake').val();
+            var weight = $('#average_weight').val();
+            var unit   = ($('#measure').val() == 'mgkg') ? 'gm' : 'MIU';
+            var devide = (unit == 'gm') ? 1000 : 1000000;
+
+            if (!active) {
+                message('msg1');
+                $('#concentration').focus();
+                return;
+            } else if (!dosage) {
+                message('msg2');
+                $('#dosage').focus();
+                return;
+            } else if (!intake) {
+                message('msg5');
+                $('#feed_intake').focus();
+                return;
+            } else if (!weight) {
+                message('msg4');
+                $('#average_weight').focus();
+                return;
+            }
+
+            var t1 = (((dosage * weight) / active) * 100) / devide;
+            var t2 = (devide / intake) * t1;
+            $('span.avg_body_weight').html(weight);
+            $('span.feed_consumption').html(intake);
+            $('span.required_product').html(number_format(t1,2));
+            $('span.amount_product').html(number_format(t2,2)+' '+unit);
+            showResultFn();
+
+            return;
+        }
+
         var active = $('#concentration2').val();
         var dosage = $('#dosage').val();
         var animal = $('#no_animal').val();
@@ -363,28 +463,9 @@ $(function() {
         var t2 = (dosage * animal * weight) / active;
         $('span.animal_qty').html(animal);
         $('span.weight').html(weight);
-        $('span.amt_ingredient').html(t1+' '+unit);
-        $('span.amt_product').html(t2+' '+unit);
-
-        var w = $('#form').outerWidth();
-        var h = $('#form').outerHeight();
-        $('#form').css('position', 'relative').animate({
-            left: -w+'px'
-        }, 500, function(){
-            $('#form').hide();
-        });
-
-        $('#result').css({
-            position: 'absolute',
-            top: 0,
-            width: w+'px',
-            height: h+'px',
-            left: w+'px'
-        }).show().animate({
-            left: 0
-        }, 500, function(){
-            $('#result').attr('style', 'height:'+h+'px');
-        });
+        $('span.amt_ingredient').html(number_format(t1,2)+' '+unit);
+        $('span.amt_product').html(number_format(t2,2));
+        showResultFn();
     });
 
     $('#back-form').click(function(){

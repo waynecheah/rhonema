@@ -62,7 +62,7 @@
 
               <div class="row pr6 animal swine" style="display:none;">
                 <label data-lang="concentration" class="lang">Product Concentration (%)</label><br />
-                <input type="number" id="concentration" name="concentration" />
+                <input type="number" id="concentration" name="concentration" value="50" />
               </div>
 
               <div class="row animal poultry">
@@ -114,17 +114,25 @@
 
             <div id="result" style="display:none;">
               <div style="max-width:600px; margin:0 auto; padding:15px;">
-                <div><span data-lang="rs1" class="lang">Animal quantity</span> <span class="animal_qty red"></span> <span class="red">Poultry</span></div>
-                <div><span data-lang="rs2" class="lang">Average Body Weight</span> <span class="weight red"></span> <span data-lang="kg" class="red">kg</span></div>
-                <div><span data-lang="rs3" class="lang">Amount of active ingredient required</span> <span class="amt_ingredient red"></span> <span class="red"></span></div>
-                <div><span data-lang="rs4" class="lang">Amount of product required</span> <span class="amt_product red"></span> <span class="red"></span></div>
+                <div id="rs-poultry">
+                    <div><span data-lang="rs1" class="lang">Animal quantity</span> <span class="animal_qty red"></span> <span data-lang="poultry" class="red lang">Poultry</span></div>
+                    <div><span data-lang="rs2" class="lang">Average Body Weight</span> <span class="weight red"></span> <span data-lang="kg" class="red">kg</span></div>
+                    <div><span data-lang="rs3" class="lang">Amount of active ingredient required</span> <span class="amt_ingredient red"></span></div>
+                    <div><span data-lang="rs4" class="lang">Amount of product required</span> <span class="amt_product red"></span> <span class="red">gm</span></div>
+                </div>
+                <div id="rs-swine" style="display:none;">
+                    <div><span data-lang="rss1" class="lang">Average Body weight of animal</span> <span class="avg_body_weight red"></span> <span class="red">kg</span></div>
+                    <div><span data-lang="rss2" class="lang">Daily Feed Consumption</span> <span class="feed_consumption red"></span> <span data-lang="kgday" class="red lang">kg/day</span></div>
+                    <div><span data-lang="rss3" class="lang">Amount of product required per animal</span> <span class="required_product red"></span> <span class="red">gm</span></div>
+                    <div><span data-lang="rss4" class="lang">Amount of product need to add into 1 MT of feed</span> <span class="amount_product red"></span></div>
+                </div>
 
                 <div style="margin:10px 0 20px;">
                   <button id="back-form" data-lang="back" class="lang" style="width:100px;">Back</button>
                   <button data-lang="exit" class="lang" style="width:100px;">Exit</button>
                 </div>
 
-                <div data-lang="contact" class="lang">Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call<br />+60378737355 for more information</div>
+                <div data-lang="contact" class="lang">Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call +60378737355 for more information</div>
               </div>
             </div>
         </div>
