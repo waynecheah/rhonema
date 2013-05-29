@@ -266,7 +266,7 @@ $(function() {
     } // switchLang
 
 
-    var height = $('#form').outerHeight();
+    var height = window.innerHeight - 150;
     $('#choose-language').css('height', height+'px');
     $('#form').attr('style', 'display:none');
 
@@ -274,6 +274,17 @@ $(function() {
     var butHgt = $('#lang-buttons').outerHeight();
     var padTop = (height - butHgt) / 2;
     $('#lang-buttons').css('padding-top', padTop+'px');
+    setTimeout(function(){
+        $('body').scrollTop(0);
+    }, 500);
+
+    $(window).on('resize', function(){
+        var height = window.innerHeight - 150;
+        var padTop = (height - butHgt) / 2;
+        $('#choose-language').css('height', height+'px');
+        $('#lang-buttons').css('padding-top', padTop+'px');
+        $('body').scrollTop(0);
+    });
 
     $('button.language').click(function(){
         language = $(this).attr('data-lang');
@@ -293,7 +304,7 @@ $(function() {
         }).show().animate({
             left: 0
         }, 500, function(){
-            $('#form').removeAttr('style');
+            $('#form').attr('style','').removeAttr('style');
         });
         switchLang();
         $('#no_animal').focus();
@@ -306,13 +317,19 @@ $(function() {
     });
     $('#disease').html(html);
 
+    $('input[type=number],select,#calculate').focus(function(){
+        var p = $(this).position();
+        var t = Math.round(p.top);
+        $('body').scrollTop(t);
+    });
+
     $('#animal').on('change', function(){
         var animal = $(this).val();
         if (animal == 'poultry') {
             $('#rs-poultry').show();
             $('#rs-swine').hide();
             $('div.swine').slideUp('normal', function(){
-                $('#dosage').attr('disabled', 'disabled').val('20');
+                $('#dosage,#measure').attr('disabled', 'disabled').val('20');
                 $('div.poultry').slideDown('normal', function(){
                     $('#no_animal').focus();
                 });
@@ -322,7 +339,7 @@ $(function() {
             $('#rs-swine').show();
             $('div.poultry').slideUp('normal', function(){
                 $('#concentration').val('50');
-                $('#dosage').removeAttr('disabled');
+                $('#dosage,#measure').removeAttr('disabled');
                 $('div.swine').slideDown('normal', function(){
                     $('#concentration').focus();
                 });
@@ -379,6 +396,7 @@ $(function() {
                 $('#form').hide();
             });
 
+            $('body').scrollTop(0);
             $('#result').css({
                 position: 'absolute',
                 top: 0,
@@ -393,7 +411,6 @@ $(function() {
         };
 
         if ($('#animal').val() == 'swine') {
-            console.log(1);
             var active = $('#concentration').val();
             var dosage = $('#dosage').val();
             var intake = $('#feed_intake').val();
@@ -484,7 +501,7 @@ $(function() {
         }).show().animate({
             left: 0
         }, 500, function(){
-            $('#form').removeAttr('style');
+            $('#form').attr('style','').removeAttr('style');
         });
     });
 });
