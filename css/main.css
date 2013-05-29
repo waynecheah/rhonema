@@ -213,8 +213,11 @@ label {
 div.row {
     padding: 15px 15px 0;
 }
-#form {
-    padding-bottom: 15px;
+div.bottomSpace {
+    height: 181px;
+}
+div.pr6 {
+    margin-right: 15px;
 }
 input[type=text],input[type=number], select, #form button {
     width: 100%;
@@ -222,9 +225,6 @@ input[type=text],input[type=number], select, #form button {
 }
 button {
     padding: 8px 0;
-}
-div.pr6 {
-    margin-right: 15px;
 }
 input.half, select.half {
     width: 47%;
