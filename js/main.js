@@ -279,11 +279,13 @@ $(function() {
     }, 500);
 
     $(window).on('resize', function(){
-        var height = window.innerHeight - 150;
-        var padTop = (height - butHgt) / 2;
-        $('#choose-language').css('height', height+'px');
-        $('#lang-buttons').css('padding-top', padTop+'px');
-        $('body').scrollTop(0);
+        if ($('#choose-language:visible').length) {
+            var height = window.innerHeight - 150;
+            var padTop = (height - butHgt) / 2;
+            $('#choose-language').css('height', height+'px');
+            $('#lang-buttons').css('padding-top', padTop+'px');
+            $('body').scrollTop(0);
+        }
     });
 
     $('button.language').click(function(){
