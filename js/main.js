@@ -467,7 +467,7 @@ $(function() {
             return;
         }
 
-        var active = $('#concentration2').val();
+        var active = $('#concentration2').val() / 100;
         var dosage = $('#dosage').val();
         var animal = $('#no_animal').val();
         var weight = $('#average_weight').val();
