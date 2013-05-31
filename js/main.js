@@ -501,7 +501,8 @@ $(function() {
         }
 
         var t1 = (dosage * animal * weight) / devide;
-        var t2 = (dosage * animal * weight) / active;
+        var t2 = (t1) / active;
+
         $('span.animal_qty').html(animal);
         $('span.weight').html(weight);
         $('span.amt_ingredient').html(number_format(t1,2)+' '+unit);
