@@ -224,63 +224,62 @@ var i18n = {
     }
 };
 
+function number_format (number, decimals, dec_point, thousands_sep) {
+    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+    var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+        s = '',
+        toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + Math.round(n * k) / k;
+        };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+} // number_format
+
+function message (no) {
+    alert(i18n[no][language]);
+} // message
+
+function switchLang () {
+    var l = language;
+    $('title').html(i18n.title[l]);
+
+    if (typeof parent.title == 'function') {
+        parent.title(i18n.title[l]);
+    }
+
+    $.each($('.lang'), function(){
+        var k = $(this).attr('data-lang');
+
+        if (typeof i18n[k] == 'undefined') { return; }
+
+        $(this).html(i18n[k][l]);
+    });
+} // switchLang
+
+function scrollField (el) {
+    var p = $(el).position();
+    var t = Math.round(p.top) - 25;
+    $('body').scrollTop(t);
+    setTimeout(function(){
+        $('body').scrollTop(t);
+    }, 500);
+} // scrollField
+
 
 $(function() {
-    function number_format (number, decimals, dec_point, thousands_sep) {
-        number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
-        var n = !isFinite(+number) ? 0 : +number,
-            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-            s = '',
-            toFixedFix = function (n, prec) {
-                var k = Math.pow(10, prec);
-                return '' + Math.round(n * k) / k;
-            };
-        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-        if (s[0].length > 3) {
-            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-        }
-        if ((s[1] || '').length < prec) {
-            s[1] = s[1] || '';
-            s[1] += new Array(prec - s[1].length + 1).join('0');
-        }
-        return s.join(dec);
-    } // number_format
-
-    function message (no) {
-        alert(i18n[no][language]);
-    } // message
-
-    function switchLang () {
-        var l = language;
-        $('title').html(i18n.title[l]);
-
-        if (typeof parent.title == 'function') {
-            parent.title(i18n.title[l]);
-        }
-
-        $.each($('.lang'), function(){
-            var k = $(this).attr('data-lang');
-
-            if (typeof i18n[k] == 'undefined') { return; }
-
-            $(this).html(i18n[k][l]);
-        });
-    } // switchLang
-
-    function scrollField (el) {
-        var p = $(el).position();
-        var t = Math.round(p.top) - 25;
-        $('body').scrollTop(t);
-        setTimeout(function(){
-            $('body').scrollTop(t);
-        }, 500);
-    } // scrollField
-
-
-    var height = window.innerHeight;
+    var height = window.innerHeight - (32 + 123);
     $('#choose-language').css('height', height+'px');
     $('#form').attr('style', 'display:none');
 
@@ -292,16 +291,16 @@ $(function() {
         $('body').scrollTop(0);
     }, 500);
 
+
     $(window).on('resize', function(){
         if ($('#choose-language:visible').length) {
-            var height = window.innerHeight;
+            var height = window.innerHeight - (32 + 123);
             var padTop = (height - butHgt) / 2;
             $('#choose-language').css('height', height+'px');
             $('#lang-buttons').css('padding-top', padTop+'px');
             $('body').scrollTop(0);
         }
     });
-
 
     $('button.language').click(function(){
         language = $(this).attr('data-lang');
@@ -349,7 +348,8 @@ $(function() {
             $('#rs-poultry').show();
             $('#rs-swine').hide();
             $('div.swine').slideUp('normal', function(){
-                $('#dosage,#measure').attr('disabled', 'disabled').val('20');
+                $('#dosage').attr('disabled', 'disabled').val('20');
+                $('#measure').attr('disabled', 'disabled').val('mgkg');
                 $('div.poultry').slideDown('normal', function(){
                     $('#no_animal').focus();
                 });

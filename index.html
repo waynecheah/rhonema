@@ -40,22 +40,118 @@
 <body>
 
 <div class="titlebar" style="color:#fff; padding:5px 10px; background-color:#949494;">Rhone Ma Dosage Calculator</div>
-<iframe id="content" src="main.html" style="width:100%; height:50px; border:0;"></iframe>
-<div style="position:fixed; bottom:0; width:100%; padding-left:15px; padding-top:3px;">
-  <div class="footer" style="max-width:600px; height:120px; margin:0 auto; padding-left:15px; background-color:#fff; background-image:url(img/tsp.jpg); background-size:content; background-repeat:no-repeat;"></div>
+
+<!-- Add your site or application content here -->
+<div id="content" style="max-width:600px; margin:0 auto; position:relative; overflow:hidden;">
+  <div id="choose-language" style="display:none;">
+    <div id="lang-buttons" style="text-align:center;">
+      <div>Please select your language.</div>
+      <div style="margin:10px 0 15px;"><button data-lang="en" class="language" style="width:150px; padding:10px;">English</button></div>
+      <div><button data-lang="zh" class="language" style="width:150px; padding:10px;">中文</button></div>
+    </div>
+  </div>
+
+  <div id="form" style="visibility:hidden;">
+    <div class="row">
+      <label data-lang="animal" class="lang">Animal</label><br />
+      <select id="animal" name="animal">
+        <option data-lang="poultry" value="poultry" class="lang">Poultry</option>
+        <option data-lang="swine" value="swine" class="lang">Swine</option>
+      </select>
+    </div>
+
+    <div class="row pr6 animal swine" style="display:none;">
+      <label data-lang="concentration" class="lang">Product Concentration (%)</label><br />
+      <input type="number" id="concentration" name="concentration" value="50" />
+    </div>
+
+    <div class="row animal poultry">
+      <label data-lang="disease" class="lang">Disease</label><br />
+      <select id="disease" name="disease"></select>
+    </div>
+
+    <div class="row animal poultry">
+      <label data-lang="product_name" class="lang">Product Name</label><br />
+      <select id="product" name="product"></select>
+    </div>
+
+    <div class="row pr6 animal others" style="display:none;">
+      <label data-lang="concentration" class="lang">Product Concentration (%)</label><br />
+      <input type="number" id="concentration2" name="concentration2" />
+    </div>
+
+    <div class="row">
+      <label data-lang="dosage" class="lang">Dosage</label>
+      <div>
+        <input type="number" id="dosage" name="dosage" class="half" style="float:left;" />
+        <select id="measure" name="measure" class="half" style="float:right;">
+          <option value="mgkg">mg/kg</option>
+          <option value="iukg">IU/kg</option>
+        </select>
+        <div style="clear:both;"></div>
+      </div>
+    </div>
+
+    <div class="row pr6 animal poultry">
+      <label data-lang="no_animal" class="lang">No. of Animal</label><br />
+      <input type="number" id="no_animal" name="no_animal" />
+    </div>
+
+    <div class="row pr6 animal swine " style="display:none;">
+      <label data-lang="feed_intake" class="lang">Feed intake(kg/day)</label><br />
+      <input type="number" id="feed_intake" name="feed_intake" />
+    </div>
+
+    <div class="row pr6">
+      <label data-lang="average_weight" class="lang">Average Body Weight (kg)</label><br />
+      <input type="number" id="average_weight" name="average_weight" />
+    </div>
+
+    <div class="row">
+      <button id="calculate" data-lang="calculate" class="lang">Calculate</button>
+    </div>
+
+    <div style="height:123px;">&nbsp;</div>
+  </div>
+
+  <div id="result" style="display:none;">
+    <div style="max-width:600px; margin:0 auto; padding:15px;">
+      <div id="rs-poultry">
+        <div><span data-lang="rs1" class="lang">Animal quantity</span> <span class="animal_qty red"></span> <span data-lang="poultry" class="red lang">Poultry</span></div>
+        <div><span data-lang="rs2" class="lang">Average Body Weight</span> <span class="weight red"></span> <span data-lang="kg" class="red">kg</span></div>
+        <div><span data-lang="rs3" class="lang">Amount of active ingredient required</span> <span class="amt_ingredient red"></span></div>
+        <div><span data-lang="rs4" class="lang">Amount of product required</span> <span class="amt_product red"></span> <span class="red">gm</span></div>
+      </div>
+      <div id="rs-swine" style="display:none;">
+        <div><span data-lang="rss1" class="lang">Average Body weight of animal</span> <span class="avg_body_weight red"></span> <span class="red">kg</span></div>
+        <div><span data-lang="rss2" class="lang">Daily Feed Consumption</span> <span class="feed_consumption red"></span> <span data-lang="kgday" class="red lang">kg/day</span></div>
+        <div><span data-lang="rss3" class="lang">Amount of product required per animal</span> <span class="required_product red"></span> <span class="red">gm</span></div>
+        <div><span data-lang="rss4" class="lang">Amount of product need to add into 1 MT of feed</span> <span class="amount_product red"></span></div>
+      </div>
+
+      <div style="margin:10px 0 20px;">
+        <button id="back-form" data-lang="back" class="lang" style="width:150px;">Back</button>
+        <button data-lang="exit" class="lang" style="width:150px;">Exit</button>
+      </div>
+
+      <div data-lang="contact" class="lang">Please visit <a href="htpp://www.rhonema.com">www.rhonema.com</a> or call +60378737355 for more information</div>
+    </div>
+  </div>
+</div>
+
+<div style="position:fixed; bottom:0; width:100%; padding-left:15px; padding-top:3px; background-color:#fff;">
+  <div class="footer" style="max-width:600px; height:120px; margin:0 auto; padding-left:15px; background-image:url(img/tsp.jpg); background-size:content; background-repeat:no-repeat;"></div>
 </div>
 
 <script src="js/vendor/jquery-2.0.0.min.js"></script>
 <script src="js/helper.js"></script>
+<script src="js/main.js?v=1.1"></script>
 <script>
-  function title (name) {
-      $('title, div.titlebar').html(name);
-  } // title
-
-  $(window).on('resize', function(){
-      var height = window.innerHeight - (32 + 123);
-      $('#content').css('height', height+'px');
-  }).trigger('resize');
+  // Google Analytics: change UA-XXXXX-X to be your site's ID
+  /*var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"]];
+   (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+   g.src='//www.google-analytics.com/ga.js';
+   s.parentNode.insertBefore(g,s)}(document,"script"));*/
 </script>
 </body>
 </html>
